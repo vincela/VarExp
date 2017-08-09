@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# Loading data\ndata(\"GWAS\")\ndata(\"COHORT\")\n\n# Computation of the genotype correlation matrix (may take some time)\nS = getGenoCorMatrix(GWAS$CHR, GWAS$POS, GWAS$A0, \"EUR\")\n\n# Parameters of the outcome and the exposure in the pooled sample\nparsY = calculateContParams(COHORT$pheno1_N, COHORT$pheno1_Mean, COHORT$pheno1_SD)\nparsE = calculateExpoParams(COHORT, \"pheno1\", \"expo1\")\n\n# Standardizing betas\nstd_betaG = standardizeBeta(GWAS$MAIN_EFFECT, GWAS$INT_EFFECT, GWAS$FREQ_A0, parsE[1], parsE[2], \"G\")\nstd_betaI = standardizeBeta(GWAS$MAIN_EFFECT, GWAS$INT_EFFECT, GWAS$FREQ_A0, parsE[1], parsE[2], \"I\")\n\n# Estimation of the fraction of variance explained\nfracG = calculateVarFrac_v2(std_betaG, std_betaI, S, parsY[2], sum(COHORT$pheno1_N), \"G\")\nfracI = calculateVarFrac_v2(std_betaG, std_betaI, S, parsY[2], sum(COHORT$pheno1_N), \"I\")\nfracJ = calculateVarFrac_v2(std_betaG, std_betaI, S, parsY[2], sum(COHORT$pheno1_N), \"J\")\n\nprint(c(fracG,fracI,fracJ))\n",
+    "created" : 1502205822252.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1319915860",
+    "id" : "69B31468",
+    "lastKnownWriteTime" : 1502284555,
+    "last_content_update" : 1502284555205,
+    "path" : "~/Bureau/PACK_R/PACKAGE/VarExp/example.R",
+    "project_path" : "example.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
