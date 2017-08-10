@@ -4,7 +4,7 @@
 \alias{preparePhenoTable}
 \title{Check that the table contains the mandatory columns
 and keep only rows (cohorts) with the specified ancestry \code{pop}.
-If \code{pop=="ALL"}, all rows are kept.}
+If \code{pop == "ALL"}, all rows are kept.}
 \usage{
 preparePhenoTable(df, ancest, pheno, expo)
 }
@@ -24,10 +24,10 @@ and colums corresponding to the studied phenotype \code{pheno} and exposure \cod
 \description{
 Check that the table contains the mandatory columns
 and keep only rows (cohorts) with the specified ancestry \code{pop}.
-If \code{pop=="ALL"}, all rows are kept.
+If \code{pop == "ALL"}, all rows are kept.
 }
 \examples{
-data("COHORT", package="VarExp", envir = environment())
-df = preparePhenoTable(COHORT, "EUR", "pheno1", "expo1")
+data("COHORT")
+df <- preparePhenoTable(COHORT, "EUR", "pheno1", "expo1")
 
 }

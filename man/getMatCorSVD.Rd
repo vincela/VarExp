@@ -9,21 +9,22 @@ getMatCorSVD(cormat, k = qr(cormat)$rank)
 \arguments{
 \item{cormat}{is the correlation matrix}
 
-\item{k}{is the number of eigen vectors to keep. Default is the correlation matrix rank.}
+\item{k}{is the number of eigenvectors to keep. 
+Default is the correlation matrix rank.}
 }
 \value{
-A list with :
+A list with 
 \describe{
   \item{eigval}{A vector of the top \code{k} eigenvalues}
-  \item{eigvev}{A matrix of the top \code{k} eigen vectors}
+  \item{eigvev}{A matrix of the top \code{k} eigenvectors}
 }
 }
 \description{
 Perform singular Value Decomposition on the correlation matrix
 }
 \examples{
-a = matrix(runif(10*10,1,5),nrow=10)
-matcor = cor(a)
+a <- matrix(runif(10*10, 1, 5), nrow = 10)
+matcor <- cor(a)
 getMatCorSVD(matcor)
 getMatCorSVD(matcor, k = 4)
 

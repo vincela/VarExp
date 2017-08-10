@@ -14,18 +14,17 @@
 #' @return The additively coded genotype matrix
 #'
 #' @examples
-#' genoMat = matrix(rbinom(5*10,1,runif(10,0,1)),nrow=5,ncol=10)
-#' lind = c("ind1","ind2","ind3","ind4","ind5")
-#' colnames(genoMat) = rep(lind,each=2)
-#' addCodedMat = getAdditivelyCodedMatrix(genoMat, lind)
+#' genoMat <- matrix(rbinom(5*10, 1, runif(10)), nrow = 5, ncol = 10)
+#' lind <- c("ind1", "ind2", "ind3", "ind4", "ind5")
+#' colnames(genoMat) <- rep(lind, each = 2)
+#' addCodedMat <- getAdditivelyCodedMatrix(genoMat, lind)
 #'
-getAdditivelyCodedMatrix = function(genoMat, lind) {
-  res = matrix(0,nrow = dim(genoMat)[1],ncol=length(lind))
-  getGeno = function(i,genoMat,lind,res) {
-    res[,i] = apply(genoMat[,grepl(lind[i], colnames(genoMat))],1,sum)
+getAdditivelyCodedMatrix <- function(genoMat, lind) {
+  res <- matrix(0, nrow = nrow(genoMat), ncol = length(lind))
+  for (i in seq_along(lind)) {
+    res[, i] <- rowSums(genoMat[, grepl(lind[[i]], colnames(genoMat))])
   }
-  res = mapply(getGeno,1:length(lind),MoreArgs=list(genoMat=genoMat,lind=lind,res=res))
-  return(res)
+  res
 }
 
 #' Align the coding with the reference panel
@@ -42,18 +41,13 @@ getAdditivelyCodedMatrix = function(genoMat, lind) {
 #' corresponding to the reference allele in the reference panel
 #'
 #' @examples
-#' genoMat = matrix(rbinom(5*5,2,runif(5,0,1)),nrow=5,ncol=5)
-#' sameRefAllele = rbinom(5,1,0.7)
-#' newGenoMat = changeCoding(genoMat, sameRefAllele)
+#' genoMat <- matrix(rbinom(5*5, 2, runif(5)), nrow = 5, ncol = 5)
+#' sameRefAllele <- rbinom(5, 1, 0.7)
+#' newGenoMat <- changeCoding(genoMat, sameRefAllele)
 #'
-changeCoding = function(x, v) {
-  tt = x
-  for (i in 1:dim(x)[1]) {
-    if (!v[i]) {
-      tt[i,] = -tt[i,] + 2
-    }
-  }
-  return(tt)
+changeCoding <- function(x, v) {
+  x[!v, ] <- 2 - x[!v, ]
+  x
 }
 
 #' Compute the genotype correlation matrix.
@@ -89,33 +83,33 @@ changeCoding = function(x, v) {
 #' @return The genotype correlation matrix of the specified variants
 #'
 #' @examples
-#' chrom = c(8,4)
-#' phys_pos = c(11843758,951947)
-#' refall = c("A","T")
-#' cor_matrix = getGenoCorMatrix(lchr = chrom,lpos = phys_pos , lrefall = refall, pop = "EUR")
+#' chrom <- c(8, 4)
+#' phys_pos <- c(11843758, 951947)
+#' refall <- c("A", "T")
+#' cor_matrix <- getGenoCorMatrix(lchr = chrom, lpos = phys_pos, 
+#'                                lrefall = refall, pop = "EUR")
 #'
 #' @export
 #' 
-getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
-  if (length(lchr)>1) {
-    lpop = rep(pop,length(lchr))
-    referencedata = mapply(get_vcf,lchr,lpos,lpos,lpop)
-    genoMat = Reduce("rbind", lapply(1:dim(referencedata)[2], 
-                                     function(i) referencedata[,i]$geno))
-    genoMap = Reduce("rbind", lapply(1:dim(referencedata)[2], 
-                                     function(i) referencedata[,i]$meta))
-
+getGenoCorMatrix <- function(lchr, lpos, lrefall, pop) {
+  if (length(lchr) > 1) {
+    lpop <- rep(pop, length(lchr))
+    referencedata <- mapply(get_vcf, lchr, lpos, lpos, lpop)
+    ind <- seq_len(ncol(referencedata))
+    genoMat <- Reduce("rbind", lapply(ind, function(i) referencedata[, i]$geno))
+    genoMap <- Reduce("rbind", lapply(ind, function(i) referencedata[, i]$meta))
+    
     # Set allele to "t" when read allele is "TRUE"
-    genoMap$REF = vapply(genoMap$REF, function(x) 
-      if (!(as.character(x) %in% c("A","C","G"))) {return("t")} else {return(x)},"")
-
-    #Keep only founders
-    lind = referencedata[,1]$ind
-    lind = referencedata[,1]$ind[which(lind$Paternal.ID == 0 & lind$Maternal.ID == 0),2]
-
-    testMat = getAdditivelyCodedMatrix(genoMat,lind)
-    testMat = changeCoding(testMat,tolower(as.character(lrefall)) == tolower(genoMap$REF))
-    colnames(testMat) = lind
+    genoMap$REF <- vapply(genoMap$REF, function(x) 
+      `if`(!(as.character(x) %in% c("A", "C", "G")), "T", x), "")
+    
+    # Keep only founders
+    lind <- referencedata[, 1]$ind
+    lind <- lind[lind$Paternal.ID == 0 & lind$Maternal.ID == 0, 2]
+    
+    testMat <- getAdditivelyCodedMatrix(genoMat, lind)
+    testMat <- changeCoding(testMat, as.character(lrefall) == genoMap$REF)
+    colnames(testMat) <- lind
     return(stats::cor(t(testMat)))
   }
   else {
@@ -129,7 +123,7 @@ getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
 #' @param k is the number of eigenvectors to keep. 
 #'   Default is the correlation matrix rank.
 #'
-#' @return A list with :
+#' @return A list with 
 #' \describe{
 #'   \item{eigval}{A vector of the top \code{k} eigenvalues}
 #'   \item{eigvev}{A matrix of the top \code{k} eigenvectors}
@@ -137,12 +131,12 @@ getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
 #'
 #'
 #' @examples
-#' a = matrix(runif(10*10,1,5),nrow=10)
-#' matcor = cor(a)
+#' a <- matrix(runif(10*10, 1, 5), nrow = 10)
+#' matcor <- cor(a)
 #' getMatCorSVD(matcor)
 #' getMatCorSVD(matcor, k = 4)
 #' 
-getMatCorSVD = function(cormat, k = qr(cormat)$rank) {
-  cormat.svd = svd(cormat, nu = 0, nv = k)
+getMatCorSVD <- function(cormat, k = qr(cormat)$rank) {
+  cormat.svd <- svd(cormat, nu = 0, nv = k)
   list(eigval = cormat.svd$d[1:k], eigvec = cormat.svd$v)
 }

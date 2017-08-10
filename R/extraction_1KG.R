@@ -151,7 +151,7 @@ get_vcf <- function(chrom, start, end, pop = NA) {
 
   retval <- list()
 
-  utils::data("ind", package="VarExp", envir = environment())
+  utils::data("ind", package = "VarExp", envir = environment())
   retval$ind <- ind[colnames(vcf)[10:ncol(vcf)],]
 
   # Separate the metadata from the genotypes.

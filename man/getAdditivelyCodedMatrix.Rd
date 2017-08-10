@@ -2,9 +2,7 @@
 % Please edit documentation in R/correlationMatrix.R
 \name{getAdditivelyCodedMatrix}
 \alias{getAdditivelyCodedMatrix}
-\title{Code additively the genotypes
-Sum the two columns per individual of the input matrix (each corresponding to one chromosome)
-to get the additive coding of the individual at the locus.}
+\title{Code additively the genotypes}
 \usage{
 getAdditivelyCodedMatrix(genoMat, lind)
 }
@@ -15,17 +13,16 @@ Rows are variants and columns are individuals}
 \item{lind}{is the list of individual in the genotype matrix}
 }
 \value{
-The additively coded genotyped matrix
+The additively coded genotype matrix
 }
 \description{
-Code additively the genotypes
-Sum the two columns per individual of the input matrix (each corresponding to one chromosome)
-to get the additive coding of the individual at the locus.
+Sum the two columns per individual of the input matrix (each corresponding 
+to one allele) to get the additive coding of the individual at the locus.
 }
 \examples{
-genoMat = matrix(rbinom(5*10,1,runif(10,0,1)),nrow=5,ncol=10)
-lind = c("ind1","ind2","ind3","ind4","ind5")
-colnames(genoMat) = rep(lind,each=2)
-addCodedMat = getAdditivelyCodedMatrix(genoMat, lind)
+genoMat <- matrix(rbinom(5*10, 1, runif(10)), nrow = 5, ncol = 10)
+lind <- c("ind1", "ind2", "ind3", "ind4", "ind5")
+colnames(genoMat) <- rep(lind, each = 2)
+addCodedMat <- getAdditivelyCodedMatrix(genoMat, lind)
 
 }

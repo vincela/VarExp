@@ -2,8 +2,8 @@
 % Please edit documentation in R/varFrac.R
 \name{calculateVarFrac_v2}
 \alias{calculateVarFrac_v2}
-\title{Calculate the fraction of phenotypic variance explained by as set of significant
-genetic effect and/or interaction effects.}
+\title{Calculate the fraction of phenotypic variance explained by as set of 
+significant genetic effect and/or interaction effects.}
 \usage{
 calculateVarFrac_v2(std_bG, std_bI, matcor, varY, N, type)
 }
@@ -18,25 +18,25 @@ calculateVarFrac_v2(std_bG, std_bI, matcor, varY, N, type)
 
 \item{N}{is the total sample size}
 
-\item{type}{indicates wether only genetic or interactions effects should be considered
-or if both should be considered jointly.}
+\item{type}{indicates wether only genetic or interactions effects should be 
+considered or if both should be considered jointly.}
 }
 \value{
 The fraction of phenotypic variance explained by user-specified effects.
 }
 \description{
-This version takes into account potential rank deficiencies in the correlation matrix
-and noise in the  effect size estimation.
+This version takes into account potential rank deficiencies
+in the correlation matrix and noise in the  effect size estimation.
 }
 \details{
 For more details, see Shi et al., Am. J. Hum. Genet., 2016
 }
 \examples{
-std_bG = rnorm(5,0,0.01)
-std_bI = rnorm(5,0,0.001)
-matcor = cor(matrix(runif(5*5,1,5),nrow=5))
-varY = 2.25
-N = 100000
+std_bG <- rnorm(5, 0, 0.01)
+std_bI <- rnorm(5, 0, 0.001)
+matcor <- cor(matrix(runif(5*5, 1, 5), nrow = 5))
+varY <- 2.25
+N <- 100000
 calculateVarFrac_v2(std_bG, std_bI, matcor, varY, N, "G")
 calculateVarFrac_v2(std_bG, std_bI, matcor, varY, N, "I")
 calculateVarFrac_v2(std_bG, std_bI, matcor, varY, N, "J")
