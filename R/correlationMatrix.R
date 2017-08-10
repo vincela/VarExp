@@ -1,16 +1,17 @@
-###################################################################################
-############ Estimate genotype correlation matrix from reference panel ############
-###################################################################################
+###############################################################################
+######## Estimate the genotype correlation matrix from reference panel ########
+###############################################################################
 
 #' Code additively the genotypes
-#' Sum the two columns per individual of the input matrix (each corresponding to one chromosome)
-#' to get the additive coding of the individual at the locus.
+#' 
+#' Sum the two columns per individual of the input matrix (each corresponding 
+#' to one allele) to get the additive coding of the individual at the locus.
 #'
 #' @param genoMat is the matrix of genotype with two colums per individual
 #' Rows are variants and columns are individuals
 #' @param lind is the list of individual in the genotype matrix
 #'
-#' @return The additively coded genotyped matrix
+#' @return The additively coded genotype matrix
 #'
 #' @examples
 #' genoMat = matrix(rbinom(5*10,1,runif(10,0,1)),nrow=5,ncol=10)
@@ -18,9 +19,7 @@
 #' colnames(genoMat) = rep(lind,each=2)
 #' addCodedMat = getAdditivelyCodedMatrix(genoMat, lind)
 #'
-#'@export
-
-getAdditivelyCodedMatrix = function(genoMat,lind) {
+getAdditivelyCodedMatrix = function(genoMat, lind) {
   res = matrix(0,nrow = dim(genoMat)[1],ncol=length(lind))
   getGeno = function(i,genoMat,lind,res) {
     res[,i] = apply(genoMat[,grepl(lind[i], colnames(genoMat))],1,sum)
@@ -29,11 +28,11 @@ getAdditivelyCodedMatrix = function(genoMat,lind) {
   return(res)
 }
 
-#' Change the coding of the variant
-#' if the reference allele differs between the data and the reference panel
-#'
-#' If reference alleles differs, new coding = 2 - old_coding
-#' Otherwise, no change
+#' Align the coding with the reference panel
+#' 
+#' Change the coding of the variant if the reference allele differs between 
+#' the data and the reference panel. If reference alleles differs, 
+#' switch 0s and 2s. Otherwise, no change.
 #'
 #' @param x is the matrix of additively coded genotypes
 #' Rows are variants and columns are individuals
@@ -47,9 +46,7 @@ getAdditivelyCodedMatrix = function(genoMat,lind) {
 #' sameRefAllele = rbinom(5,1,0.7)
 #' newGenoMat = changeCoding(genoMat, sameRefAllele)
 #'
-#'@export
-
-changeCoding = function(x,v) {
+changeCoding = function(x, v) {
   tt = x
   for (i in 1:dim(x)[1]) {
     if (!v[i]) {
@@ -61,8 +58,8 @@ changeCoding = function(x,v) {
 
 #' Compute the genotype correlation matrix.
 #'
-#' From a set of variants identified by the pair (chromosome, position), extract the SNPs from a reference
-#' panel in the specified population.
+#' From a set of variants identified by the pair (chromosome, position), extract 
+#' the SNPs from a reference panel in the specified population.
 #'
 #' Currently, this is hard-coded to access 1000 Genomes phase3 data hosted by
 #' Brian Browning (author of BEAGLE):
@@ -78,8 +75,8 @@ changeCoding = function(x,v) {
 #' FIN, GBR, GIH, GWD, IBS, ITU, JPT, KHV, LWK, MSL, MXL, PEL, PJL, PUR, STU,
 #' TSI, YRI. It can also be any super-population: AFR, AMR, EAS, EUR, SAS.
 #'
-#' Then, code additively the genotype and modify the additively coded allele if reference alleles
-#' differ between data and reference panel
+#' Then, code additively the genotype and modify the additively coded allele if 
+#' reference alleles differ between data and reference panel
 #' and finally compute the correlation matrix.
 #'
 #' Physical position must in
@@ -98,16 +95,19 @@ changeCoding = function(x,v) {
 #' cor_matrix = getGenoCorMatrix(lchr = chrom,lpos = phys_pos , lrefall = refall, pop = "EUR")
 #'
 #' @export
-
+#' 
 getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
   if (length(lchr)>1) {
     lpop = rep(pop,length(lchr))
     referencedata = mapply(get_vcf,lchr,lpos,lpos,lpop)
-    genoMat = Reduce("rbind", lapply(1:dim(referencedata)[2], function(i) referencedata[,i]$geno))
-    genoMap = Reduce("rbind",lapply(1:dim(referencedata)[2], function(i) referencedata[,i]$meta))
+    genoMat = Reduce("rbind", lapply(1:dim(referencedata)[2], 
+                                     function(i) referencedata[,i]$geno))
+    genoMap = Reduce("rbind", lapply(1:dim(referencedata)[2], 
+                                     function(i) referencedata[,i]$meta))
 
     # Set allele to "t" when read allele is "TRUE"
-    genoMap$REF = vapply(genoMap$REF, function(x) if (!(as.character(x) %in% c("A","C","G"))) {return("t")} else {return(x)},"")
+    genoMap$REF = vapply(genoMap$REF, function(x) 
+      if (!(as.character(x) %in% c("A","C","G"))) {return("t")} else {return(x)},"")
 
     #Keep only founders
     lind = referencedata[,1]$ind
@@ -116,7 +116,7 @@ getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
     testMat = getAdditivelyCodedMatrix(genoMat,lind)
     testMat = changeCoding(testMat,tolower(as.character(lrefall)) == tolower(genoMap$REF))
     colnames(testMat) = lind
-    return(cor(t(testMat)))
+    return(stats::cor(t(testMat)))
   }
   else {
     return(1)
@@ -126,12 +126,13 @@ getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
 #' Perform singular Value Decomposition on the correlation matrix
 #'
 #' @param cormat is the correlation matrix
-#' @param k is the number of eigen vectors to keep. Default is the correlation matrix rank.
+#' @param k is the number of eigenvectors to keep. 
+#'   Default is the correlation matrix rank.
 #'
 #' @return A list with :
 #' \describe{
 #'   \item{eigval}{A vector of the top \code{k} eigenvalues}
-#'   \item{eigvev}{A matrix of the top \code{k} eigen vectors}
+#'   \item{eigvev}{A matrix of the top \code{k} eigenvectors}
 #' }
 #'
 #'
@@ -140,13 +141,8 @@ getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
 #' matcor = cor(a)
 #' getMatCorSVD(matcor)
 #' getMatCorSVD(matcor, k = 4)
-#'
-#' @export
-
+#' 
 getMatCorSVD = function(cormat, k = qr(cormat)$rank) {
-  cormat.svd = svd(cormat)
-  l = list()
-  l$eigval = cormat.svd$d[1:k]
-  l$eigvec = cormat.svd$v[,1:k]
-  return(l)
+  cormat.svd = svd(cormat, nu = 0, nv = k)
+  list(eigval = cormat.svd$d[1:k], eigvec = cormat.svd$v)
 }

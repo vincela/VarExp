@@ -58,7 +58,7 @@ preparePhenoTable = function(df,ancest,pheno,expo) {
   if (ancest == "ALL") {
     df = df[, grepl(paste("Cohort|ANCESTRY",paste0(pheno,"_N"),paste0(pheno,"_Mean"),paste0(pheno,"_SD"),paste(pheno,expo,sep="_"),sep="|"), colnames(df))]
   }
-  df = na.omit(df)
+  df = stats::na.omit(df)
   return(df)
 }
 
