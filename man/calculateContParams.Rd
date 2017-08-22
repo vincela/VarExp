@@ -2,7 +2,8 @@
 % Please edit documentation in R/varFrac.R
 \name{calculateContParams}
 \alias{calculateContParams}
-\title{Calculate the mean and variance of a quantitative variable in a pooled sample of several cohorts}
+\title{Calculate the mean and variance of a quantitative variable in a pooled sample 
+of several cohorts}
 \usage{
 calculateContParams(N, m, v)
 }
@@ -11,18 +12,21 @@ calculateContParams(N, m, v)
 
 \item{m}{is a vector of the mean of the variable in each individual cohort}
 
-\item{v}{is a vector of the standard deviation of the variable in each individual cohorts}
+\item{v}{is a vector of the standard deviation of the variable in each 
+individual cohorts}
 }
 \value{
-A vector of length 2 which first element is the mean and second element is the variance
+A vector of length 2 which first element is the mean and 
+  second element is the variance
 }
 \description{
-Calculate the mean and variance of a quantitative variable in a pooled sample of several cohorts
+Calculate the mean and variance of a quantitative variable in a pooled sample 
+of several cohorts
 }
 \examples{
-sample_sizes = c(250, 1000, 10000,7500)
-means = c(2.5, 2.28, 2.32, 2.42)
-sds = c(1.05,1.1, 0.98, 0.94)
-parameters = calculateContParams(sample_sizes, means, sds)
+sample_sizes <- c(250, 1000, 10000, 7500)
+means <- c(2.5, 2.28, 2.32, 2.42)
+sds <- c(1.05, 1.1, 0.98, 0.94)
+parameters <- calculateContParams(sample_sizes, means, sds)
 
 }

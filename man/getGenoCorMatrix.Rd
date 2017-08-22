@@ -19,8 +19,8 @@ getGenoCorMatrix(lchr, lpos, lrefall, pop)
 The genotype correlation matrix of the specified variants
 }
 \description{
-From a set of variants identified by the pair (chromosome, position), extract the SNPs from a reference
-panel in the specified population.
+From a set of variants identified by the pair (chromosome, position), extract 
+the SNPs from a reference panel in the specified population.
 }
 \details{
 Currently, this is hard-coded to access 1000 Genomes phase3 data hosted by
@@ -37,16 +37,15 @@ The \code{pop} can be any of: ACB, ASW, BEB, CDX, CEU, CHB, CHS, CLM, ESN,
 FIN, GBR, GIH, GWD, IBS, ITU, JPT, KHV, LWK, MSL, MXL, PEL, PJL, PUR, STU,
 TSI, YRI. It can also be any super-population: AFR, AMR, EAS, EUR, SAS.
 
-Then, code additively the genotype and modify the additively coded allele if reference alleles
-differ between data and reference panel
+Then, code additively the genotype and modify the additively coded allele if 
+reference alleles differ between data and reference panel
 and finally compute the correlation matrix.
-
-Physical position must in
 }
 \examples{
-chrom = c(8,4)
-phys_pos = c(11843758,951947)
-refall = c("A","T")
-cor_matrix = getGenoCorMatrix(lchr = chrom,lpos = phys_pos , lrefall = refall, pop = "EUR")
+chrom <- c(8, 4)
+phys_pos <- c(11843758, 951947)
+refall <- c("A", "T")
+cor_matrix <- getGenoCorMatrix(lchr = chrom, lpos = phys_pos, 
+                               lrefall = refall, pop = "EUR")
 
 }

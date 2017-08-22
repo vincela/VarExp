@@ -51,8 +51,3 @@ TSI, YRI. It can also be any super-population: AFR, AMR, EAS, EUR, SAS.
 Find more details here:
 \url{http://www.1000genomes.org/faq/which-populations-are-part-your-study}
 }
-\examples{
-vcf <- get_vcf(chrom = "12", start = 533090, end = 623090, pop = "AFR")
-names(vcf)
-
-}

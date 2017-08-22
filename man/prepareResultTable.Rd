@@ -19,17 +19,12 @@ prepareResultTable(df, ancest, pheno, expo)
 \item{expo}{is the studied exposure}
 }
 \value{
-The data frame with only rows corresponding to the studied population \code{ancest}
-and to the studied phenotype \code{pheno} and exposure \code{expo}
+The data frame with only rows corresponding to the studied population 
+\code{ancest} and to the studied phenotype \code{pheno} and exposure \code{expo}
 }
 \description{
 Check that the table contains the mandatory columns
 and keep only rows (cohorts) with the specified ancestry \code{pop},
 the specified phenoype \code{pheno}
 and the specified exposure \code{expo}
-}
-\examples{
-data("GWAS", package="VarExp", envir = environment())
-df = prepareResultTable(GWAS, "EUR", "pheno1", "expo1")
-
 }

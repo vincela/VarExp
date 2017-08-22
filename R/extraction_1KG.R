@@ -1,3 +1,5 @@
+globalVariables("ind")
+
 #' This function is from the 'proxysnps' package available at
 #' \url{https://github.com/slowkow/proxysnps/blob/master/R/get_vcf.R}
 #'
@@ -37,12 +39,6 @@
 #'    columns for each individual.}
 #' }
 #'
-#' @examples
-#' vcf <- get_vcf(chrom = "12", start = 533090, end = 623090, pop = "AFR")
-#' names(vcf)
-#'
-#' @export
-
 get_vcf <- function(chrom, start, end, pop = NA) {
 
   # Hard-coded superpopulations for each individual.
@@ -130,7 +126,7 @@ get_vcf <- function(chrom, start, end, pop = NA) {
   sample_ids <- sample_ids[10:length(sample_ids)]
 
   # Read the body of the data into a dataframe.
-  vcf <- read.delim(
+  vcf <- utils::read.delim(
     text = txt, header = FALSE, comment.char = "#", stringsAsFactors = FALSE)
 
   # Assign the standard column names and sample identifiers.
@@ -151,7 +147,7 @@ get_vcf <- function(chrom, start, end, pop = NA) {
 
   retval <- list()
 
-  data("ind", package="VarExp", envir = environment())
+  utils::data("ind", package = "VarExp", envir = environment())
   retval$ind <- ind[colnames(vcf)[10:ncol(vcf)],]
 
   # Separate the metadata from the genotypes.

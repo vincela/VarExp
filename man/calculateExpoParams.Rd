@@ -14,19 +14,20 @@ calculateExpoParams(df, pheno, expo)
 \item{expo}{is the studied exposure}
 }
 \value{
-A vector of length 2 which first element is the mean and second element is the variance
+A vector of length 2 which first element is the mean and 
+  second element is the variance
 }
 \description{
 Calculate the mean and the variance of the exposure
 }
 \examples{
-#Case where E is quantitative
-datafr = data.frame(floor(rnorm(5,5000,2000)), runif(5,2.5,3), runif(5, 1.2, 1.4))
-colnames(datafr) = c("pheno_N", "pheno_expo_Mean", "pheno_expo_SD")
-params = calculateExpoParams(df = datafr, pheno = "pheno", expo = "expo")
-#Case where E is binary
-datafr = data.frame(floor(rnorm(5,5000,2000)), floor(runif(5,1000,3000)))
-colnames(datafr) = c("pheno_N", "pheno_expo_P")
-params = calculateExpoParams(df = datafr, pheno = "pheno", expo = "expo")
+# Case where E is quantitative
+datafr <- data.frame(floor(rnorm(5, 5000, 2000)), runif(5, 2.5, 3), runif(5, 1.2, 1.4))
+colnames(datafr) <- c("pheno_N", "pheno_expo_Mean", "pheno_expo_SD")
+params <- calculateExpoParams(df = datafr, pheno = "pheno", expo = "expo")
+# Case where E is binary
+datafr <- data.frame(floor(rnorm(5, 5000, 2000)), floor(runif(5, 1000, 3000)))
+colnames(datafr) <- c("pheno_N", "pheno_expo_P")
+params <- calculateExpoParams(df = datafr, pheno = "pheno", expo = "expo")
 
 }

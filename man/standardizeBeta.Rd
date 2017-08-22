@@ -27,16 +27,17 @@ The vector of standardized effects
 Derive betas in the standardized model from betas in the general model
 }
 \examples{
-betaGs = rnorm(10, 0, 0.1)
-betaIs = rnorm(10, 0, 0.05)
-mafs = runif(10,0.05,0.95)
-meanE = runif(1,-2,2)
-varE = runif(1,0.5,1.5)
-std_betaG = standardizeBeta(betaGs, betaIs, mafs, meanE, varE, "G")
-std_betaI = standardizeBeta(betaGs, betaIs, mafs, meanE, varE, "I")
+betaGs <- rnorm(10, 0, 0.1)
+betaIs <- rnorm(10, 0, 0.05)
+mafs <- runif(10, 0.05, 0.95)
+meanE <- runif(1, -2, 2)
+varE <- runif(1, 0.5, 1.5)
+std_betaG <- standardizeBeta(betaGs, betaIs, mafs, meanE, varE, "G")
+std_betaI <- standardizeBeta(betaGs, betaIs, mafs, meanE, varE, "I")
 
-\dontrun{
-std_betaI = standardizeBeta(betaGs, betaIs, mafs, meanE, varE, "anything different from G or I")
-}
+tryCatch(
+  std_betaI <- standardizeBeta(betaGs, betaIs, mafs, meanE, varE, 
+                               "anything different from G or I"),
+  error = function(e) print(e))
 
 }

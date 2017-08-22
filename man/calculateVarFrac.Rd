@@ -2,8 +2,8 @@
 % Please edit documentation in R/varFrac.R
 \name{calculateVarFrac}
 \alias{calculateVarFrac}
-\title{Calculate the fraction of phenotypic variance explained by as set of significant
-genetic effect and/or interaction effects.}
+\title{Calculate the fraction of phenotypic variance explained by as set of 
+significant genetic effect and/or interaction effects.}
 \usage{
 calculateVarFrac(std_bG, std_bI, matcor, varY, type)
 }
@@ -16,24 +16,23 @@ calculateVarFrac(std_bG, std_bI, matcor, varY, type)
 
 \item{varY}{is the phenotypic variance in the pooled sample}
 
-\item{type}{indicates wether only genetic or interactions effects should be considered
- or if both should be considered jointly.
-
- @return The fraction of phenotypic variance explained by user-specified effects.
-
- @examples
- std_bG = rnorm(5,0,0.01)
- std_bI = rnorm(5,0,0.001)
- matcor = cor(matrix(runif(5*5,1,5),nrow=5))
- varY = 2.25
- calculateVarFrac(std_bG, std_bI, matcor, varY, "G")
- calculateVarFrac(std_bG, std_bI, matcor, varY, "I")
- calculateVarFrac(std_bG, std_bI, matcor, varY, "J")
-
- @importFrom MASS ginv
- @export}
+\item{type}{indicates wether only genetic or interactions effects should be 
+considered or if both should be considered jointly.}
+}
+\value{
+The fraction of phenotypic variance explained by user-specified effects.
 }
 \description{
-This version does not take into account potential biases in
-neither the estimation of effect sizes nor the estimation of the correlation matrix
+This version does not take into account potential biases in neither the 
+estimation of effect sizes nor the estimation of the correlation matrix
+}
+\examples{
+std_bG <- rnorm(5, 0, 0.01)
+std_bI <- rnorm(5, 0, 0.001)
+matcor <- cor(matrix(runif(5*5, 1, 5), nrow = 5))
+varY <- 2.25
+calculateVarFrac(std_bG, std_bI, matcor, varY, "G")
+calculateVarFrac(std_bG, std_bI, matcor, varY, "I")
+calculateVarFrac(std_bG, std_bI, matcor, varY, "J")
+
 }
