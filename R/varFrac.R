@@ -1,3 +1,5 @@
+################################################################################
+
 #' Check that the table contains the mandatory columns
 #' and keep only rows (cohorts) with the specified ancestry \code{pop}.
 #' If \code{pop == "ALL"}, all rows are kept.
@@ -7,36 +9,34 @@
 #' @param pheno is the studied phenotype
 #' @param expo is the studied exposure
 #'
-#' @return The data frame with only rows corresponding to the studied population \code{ancest}
-#' and colums corresponding to the studied phenotype \code{pheno} and exposure \code{expo}
-#'
-#' @examples
-#' data("COHORT")
-#' df <- preparePhenoTable(COHORT, "EUR", "pheno1", "expo1")
+#' @return The data frame with only rows corresponding to the studied population 
+#' \code{ancest} and colums corresponding to the studied phenotype \code{pheno} 
+#' and exposure \code{expo}
 #'
 preparePhenoTable <- function(df, ancest, pheno, expo) {
   colsToSearch <- c("Cohort", "ANCESTRY", paste0(pheno, c("_N", "_Mean", "_SD")))
   missingCols <- colsToSearch[!(colsToSearch %in% colnames(df))]
   if (length(missingCols) > 0)
-    stop(paste0("Missing column '", missingCols[i], "' in the cohort dataframe"), 
-         call. = FALSE)
+    stop(paste0("Missing column(s) '", toString(missingCols),
+                "' in the cohort dataframe"), call. = FALSE)
   
   if (ancest != "ALL") {
     colsToGrep <- c(colsToSearch, paste(pheno, expo, sep = "_"), 
                     paste0(expo, c("_Mean", "_SD")))
-    df <- df[df$ANCESTRY == ancest, 
-             grepl(paste(colsToGrep, collapse = "|"), colnames(df))]
+    df <- df[df$ANCESTRY == ancest, colnames(df) %in% colsToGrep]
     if (nrow(df) == 0) {
       stop(paste0("Cannot find ancestry ", ancest, " in the cohort dataframe"), 
            call. = FALSE)
     }
   } else {
     colsToGrep <- c(colsToSearch, paste(pheno, expo, sep = "_"))
-    df <- df[, grepl(paste(colsToGrep,  collapse = "|"), colnames(df))]
+    df <- df[, colnames(df) %in% colsToGrep]
   }
   
   stats::na.omit(df)
 }
+
+################################################################################
 
 #' Check that the table contains the mandatory columns
 #' and keep only rows (cohorts) with the specified ancestry \code{pop},
@@ -51,23 +51,21 @@ preparePhenoTable <- function(df, ancest, pheno, expo) {
 #' @return The data frame with only rows corresponding to the studied population 
 #' \code{ancest} and to the studied phenotype \code{pheno} and exposure \code{expo}
 #'
-#' @examples
-#' data("GWAS")
-#' df <- prepareResultTable(GWAS, "EUR", "pheno1", "expo1")
-#'
 prepareResultTable <- function(df, ancest, pheno, expo) {
-  df <- subset(df, POP == ancest)
+  df <- df[df$POP == ancest, ]
   if (nrow(df) == 0) {
     stop(paste0("Cannot find ancestry ", ancest, " in in the results dataframe"), 
          call. = FALSE)
   }
-  df <- subset(df, PHENO == pheno & EXPO == expo)
+  df <- df[df$PHENO == pheno & df$EXPO == expo, ]
   if (nrow(df) == 0) {
     stop(paste("Cannot find phenotype - exposure", paste(pheno, expo), 
                "in the results dataframe"), call. = FALSE)
   }
   df
 }
+
+################################################################################
 
 #' Calculate the mean and variance of a quantitative variable in a pooled sample 
 #' of several cohorts
@@ -94,6 +92,8 @@ calculateContParams <- function(N, m, v) {
   bb <- N * (m - gmean)^2
   c(gmean, sum(aa + bb) / (sum(N) - 1))
 }
+
+################################################################################
 
 #' Calculate the mean and the variance of the exposure
 #'
@@ -135,6 +135,8 @@ calculateExpoParams <- function(df, pheno, expo) {
   }
 }
 
+################################################################################
+
 #' Derive betas in the standardized model from betas in the general model
 #'
 #' @param betaG is the vector of main genetic effects in the general model
@@ -174,6 +176,8 @@ standardizeBeta <- function(betaG,betaINT,maf,meanE,varE,type) {
     stop("type must be either \"I\" or \"G\"", call. = FALSE)
   }
 }
+
+################################################################################
 
 #' Calculate the fraction of phenotypic variance explained by as set of 
 #' significant genetic effect and/or interaction effects.
@@ -216,6 +220,8 @@ calculateVarFrac <- function(std_bG, std_bI, matcor, varY, type) {
   return((crossprod(t(crossprod(std_bG, ginv(matcor))), std_bG) +
             crossprod(t(crossprod(std_bI, ginv(matcor))), std_bI)) / varY)
 }
+
+################################################################################
 
 #' Calculate the fraction of phenotypic variance explained by as set of 
 #' significant genetic effect and/or interaction effects.
@@ -264,3 +270,5 @@ calculateVarFrac_v2 <- function(std_bG, std_bI, matcor, varY, N, type) {
                  crossprod(t(crossprod(std_bI, ginv(matcor))), std_bI)) -
             q) / ((N - q) * varY))
 }
+
+################################################################################

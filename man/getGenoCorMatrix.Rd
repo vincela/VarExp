@@ -40,8 +40,6 @@ TSI, YRI. It can also be any super-population: AFR, AMR, EAS, EUR, SAS.
 Then, code additively the genotype and modify the additively coded allele if 
 reference alleles differ between data and reference panel
 and finally compute the correlation matrix.
-
-Physical position must in
 }
 \examples{
 chrom <- c(8, 4)

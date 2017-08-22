@@ -21,9 +21,3 @@ Change the coding of the variant if the reference allele differs between
 the data and the reference panel. If reference alleles differs, 
 switch 0s and 2s. Otherwise, no change.
 }
-\examples{
-genoMat <- matrix(rbinom(5*5, 2, runif(5)), nrow = 5, ncol = 5)
-sameRefAllele <- rbinom(5, 1, 0.7)
-newGenoMat <- changeCoding(genoMat, sameRefAllele)
-
-}

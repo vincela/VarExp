@@ -39,10 +39,6 @@ globalVariables("ind")
 #'    columns for each individual.}
 #' }
 #'
-#' @examples
-#' vcf <- get_vcf(chrom = "12", start = 533090, end = 623090, pop = "AFR")
-#' names(vcf)
-#' 
 get_vcf <- function(chrom, start, end, pop = NA) {
 
   # Hard-coded superpopulations for each individual.

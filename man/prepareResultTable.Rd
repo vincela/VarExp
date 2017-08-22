@@ -28,8 +28,3 @@ and keep only rows (cohorts) with the specified ancestry \code{pop},
 the specified phenoype \code{pheno}
 and the specified exposure \code{expo}
 }
-\examples{
-data("GWAS")
-df <- prepareResultTable(GWAS, "EUR", "pheno1", "expo1")
-
-}

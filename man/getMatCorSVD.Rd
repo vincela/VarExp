@@ -22,10 +22,3 @@ A list with
 \description{
 Perform singular Value Decomposition on the correlation matrix
 }
-\examples{
-a <- matrix(runif(10*10, 1, 5), nrow = 10)
-matcor <- cor(a)
-getMatCorSVD(matcor)
-getMatCorSVD(matcor, k = 4)
-
-}

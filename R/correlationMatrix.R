@@ -1,6 +1,6 @@
-###############################################################################
-######## Estimate the genotype correlation matrix from reference panel ########
-###############################################################################
+################################################################################
+######## Estimate the genotype correlation matrix from reference panel #########
+################################################################################
 
 #' Code additively the genotypes
 #' 
@@ -13,19 +13,15 @@
 #'
 #' @return The additively coded genotype matrix
 #'
-#' @examples
-#' genoMat <- matrix(rbinom(5*10, 1, runif(10)), nrow = 5, ncol = 10)
-#' lind <- c("ind1", "ind2", "ind3", "ind4", "ind5")
-#' colnames(genoMat) <- rep(lind, each = 2)
-#' addCodedMat <- getAdditivelyCodedMatrix(genoMat, lind)
-#'
 getAdditivelyCodedMatrix <- function(genoMat, lind) {
   res <- matrix(0, nrow = nrow(genoMat), ncol = length(lind))
   for (i in seq_along(lind)) {
-    res[, i] <- rowSums(genoMat[, grepl(lind[[i]], colnames(genoMat))])
+    res[, i] <- rowSums(genoMat[, colnames(genoMat) %in% lind[[i]]])
   }
   res
 }
+
+################################################################################
 
 #' Align the coding with the reference panel
 #' 
@@ -40,15 +36,12 @@ getAdditivelyCodedMatrix <- function(genoMat, lind) {
 #' @return The additively coded genotyped matrix with coded allele in the matrix
 #' corresponding to the reference allele in the reference panel
 #'
-#' @examples
-#' genoMat <- matrix(rbinom(5*5, 2, runif(5)), nrow = 5, ncol = 5)
-#' sameRefAllele <- rbinom(5, 1, 0.7)
-#' newGenoMat <- changeCoding(genoMat, sameRefAllele)
-#'
 changeCoding <- function(x, v) {
   x[!v, ] <- 2 - x[!v, ]
   x
 }
+
+################################################################################
 
 #' Compute the genotype correlation matrix.
 #'
@@ -72,8 +65,6 @@ changeCoding <- function(x, v) {
 #' Then, code additively the genotype and modify the additively coded allele if 
 #' reference alleles differ between data and reference panel
 #' and finally compute the correlation matrix.
-#'
-#' Physical position must in
 #'
 #' @param lchr is a vector with the chromosome number of the variants to extract
 #' @param lpos is a vector with the physical position of the variants to extract
@@ -117,6 +108,8 @@ getGenoCorMatrix <- function(lchr, lpos, lrefall, pop) {
   }
 }
 
+################################################################################
+
 #' Perform singular Value Decomposition on the correlation matrix
 #'
 #' @param cormat is the correlation matrix
@@ -128,15 +121,10 @@ getGenoCorMatrix <- function(lchr, lpos, lrefall, pop) {
 #'   \item{eigval}{A vector of the top \code{k} eigenvalues}
 #'   \item{eigvev}{A matrix of the top \code{k} eigenvectors}
 #' }
-#'
-#'
-#' @examples
-#' a <- matrix(runif(10*10, 1, 5), nrow = 10)
-#' matcor <- cor(a)
-#' getMatCorSVD(matcor)
-#' getMatCorSVD(matcor, k = 4)
 #' 
 getMatCorSVD <- function(cormat, k = qr(cormat)$rank) {
   cormat.svd <- svd(cormat, nu = 0, nv = k)
   list(eigval = cormat.svd$d[1:k], eigvec = cormat.svd$v)
 }
+
+################################################################################

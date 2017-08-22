@@ -1,3 +1,5 @@
+################################################################################
+
 #' This is data included in the package
 #'
 #' @name ind
@@ -7,6 +9,8 @@
 #' @keywords data
 NULL
 
+################################################################################
+
 #' Example of GWAS result input file
 #'
 #' @name GWAS
@@ -15,9 +19,13 @@ NULL
 #' @keywords data
 "GWAS"
 
+################################################################################
+
 #' Example of cohort description input file
 #' @name COHORT
 #' @docType data
 #' @author Vincent Laville \email{vincent.laville@pasteur.fr}
 #' @keywords data
 "COHORT"
+
+################################################################################
