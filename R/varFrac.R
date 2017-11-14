@@ -264,7 +264,7 @@ calculateVarFrac = function(std_bG, std_bI,matcor,varY,type) {
 #' @importFrom MASS ginv
 #' @export
 
-calculateVarFrac_v2 = function(std_bG, std_bI,matcor,varY, N,type) {
+calculateVarFrac_v2 = function(std_bG, std_bI, matcor, varY, N, type, tol = 0.01) {
   if (type == "G") {
     std_bI = rep(0, length(std_bG))
   }
@@ -275,5 +275,6 @@ calculateVarFrac_v2 = function(std_bG, std_bI,matcor,varY, N,type) {
     stop("type must be in c(\"G\", \"I\", \"J\")", call. = F)
   }
   q = qr(matcor)$rank
-  return((N * (crossprod(t(crossprod(std_bG, ginv(matcor))), std_bG) + crossprod(t(crossprod(std_bI, ginv(matcor))), std_bI)) - q) / ((N - q) * varY))
+  inverse <- ginv(matcor, tol = tol)
+  return((N * (crossprod(t(crossprod(std_bG, inverse)), std_bG) + crossprod(t(crossprod(std_bI, inverse)), std_bI)) - q) / ((N - q) * varY))
 }

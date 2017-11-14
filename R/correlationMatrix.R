@@ -84,25 +84,30 @@ changeCoding = function(x,v) {
 #'
 #' Physical position must in
 #'
+#' @param lrsid is a vector with the rs identifiers of the variants to extract
 #' @param lchr is a vector with the chromosome number of the variants to extract
 #' @param lpos is a vector with the physical position of the variants to extract
 #' @param lrefall is a vector with the reference allele of the variant in the data.
 #' @param pop is the 1000 Genomes code of the population in which data must be extracted
+#' @param path path to the reference genotype file if locally downloaded
+#' @param web logical indicating whether to use web access or not
 #'
 #' @return The genotype correlation matrix of the specified variants
 #'
 #' @examples
+#'
+#' ids = c("rs4841662", "rs34311866")
 #' chrom = c(8,4)
 #' phys_pos = c(11843758,951947)
 #' refall = c("A","T")
-#' cor_matrix = getGenoCorMatrix(lchr = chrom,lpos = phys_pos , lrefall = refall, pop = "EUR")
+#' cor_matrix = getGenoCorMatrix(lrsid = ids, lchr = chrom,lpos = phys_pos , lrefall = refall, pop = "EUR")
 #'
 #' @export
 
-getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
+getGenoCorMatrix = function(lrsid, lchr, lpos, lrefall, pop, path = "", web = TRUE) {
   if (length(lchr)>1) {
     lpop = rep(pop,length(lchr))
-    referencedata = mapply(get_vcf,lchr,lpos,lpos,lpop)
+    referencedata = mapply(get_vcf, lchr, lpos, lpos, lpop, path, web)
     genoMat = Reduce("rbind", lapply(1:dim(referencedata)[2], function(i) referencedata[,i]$geno))
     genoMap = Reduce("rbind",lapply(1:dim(referencedata)[2], function(i) referencedata[,i]$meta))
 
@@ -114,6 +119,16 @@ getGenoCorMatrix = function(lchr,lpos, lrefall, pop) {
     lind = referencedata[,1]$ind[which(lind$Paternal.ID == 0 & lind$Maternal.ID == 0),2]
 
     testMat = getAdditivelyCodedMatrix(genoMat,lind)
+    to_remove <- NULL
+    for (i in 1:nrow(testMat)) {
+      if (!(rownames(testMat)[i] %in% lrsid)) {
+        to_remove   <- c(to_remove, i)
+      }
+    }
+    if (!is.null(to_remove)) {
+      testMat   <- testMat[-to_remove,]
+      genoMap   <- genoMap[-to_remove,]
+    }
     testMat = changeCoding(testMat,tolower(as.character(lrefall)) == tolower(genoMap$REF))
     colnames(testMat) = lind
     return(cor(t(testMat)))

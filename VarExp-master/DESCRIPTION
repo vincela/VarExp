@@ -1,0 +1,20 @@
+Package: VarExp
+Version: 0.1.0
+Date: 2017-06-27
+Title: Computes phenotypic variance explained by a set of genetic and/or interaction effects
+Authors@R: c(person("Vincent", "Laville", role = c("aut", "cre"), email = "laville.vincent@gmail.com"),
+    person("Hugues", "Aschard", role = "aut", email = "hugues.aschard@pasteur.fr"))
+Maintainer: Vincent laville <laville.vincent@gmail.com>
+Description: This package implements functions to estimate the phenotypic variance explained by a set of genetic effects,
+    interaction effects or jointly by genetic and interaction effects. It only uses summary statistics
+    and is designed for meta-analyses by computing phenotype and exposure moments in the pooled sample
+    of individual cohorts.
+Depends: R (>= 3.3.2)
+License: MIT + file LICENSE
+Imports:
+    MASS,
+    RCurl,
+    stats,
+    utils
+RoxygenNote: 6.0.1.9000
+LazyData: true

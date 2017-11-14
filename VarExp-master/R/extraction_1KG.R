@@ -1,3 +1,5 @@
+globalVariables("ind")
+
 #' This function is from the 'proxysnps' package available at
 #' \url{https://github.com/slowkow/proxysnps/blob/master/R/get_vcf.R}
 #'
@@ -24,9 +26,6 @@
 #' @param start a positive integer indicating the start of a genomic region
 #' @param end a positive integer indicating the end of a genomic region
 #' @param pop the name of a 1000 Genomes population (AMR,AFR,ASN,EUR,...)
-#' @param path path to the reference genotype file if locally downloaded
-#' @param web logical indicating whether to use web access or not
-#'
 #' @return A list with three dataframes:
 #' \describe{
 #'   \item{ind}{A dataframe with information about individuals: Family.ID,
@@ -40,13 +39,7 @@
 #'    columns for each individual.}
 #' }
 #'
-#' @examples
-#' vcf <- get_vcf(chrom = "12", start = 533090, end = 623090, pop = "AFR")
-#' names(vcf)
-#'
-#' @export
-
-get_vcf <- function(chrom, start, end, pop = NA, path = "", web = TRUE) {
+get_vcf <- function(chrom, start, end, pop = NA) {
 
   # Hard-coded superpopulations for each individual.
   superpops <- rep(
@@ -110,23 +103,16 @@ get_vcf <- function(chrom, start, end, pop = NA, path = "", web = TRUE) {
     )
   }
 
-  txt <- NULL
-  if (web == TRUE) {
-    # These are variants filtered by Brian Browning, the developer of BEAGLE.
-    data_url = paste(sep = "",
-                     "http://tabix.iobio.io/?cmd=-h%20%27",
-                     "http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes_phase3_v5a/",
-                     "individual_chromosomes/chr", chrom, ".1kg.phase3.v5a.vcf.gz",
-                     "%27%20", chrom, ":", start, "-", end
-    )
-    # Download the data from the server.
-    txt <- RCurl::getURL(data_url)
-  }
+  # These are variants filtered by Brian Browning, the developer of BEAGLE.
+  data_url = paste(sep = "",
+                   "http://tabix.iobio.io/?cmd=-h%20%27",
+                   "http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes_phase3_v5a/",
+                   "individual_chromosomes/chr", chrom, ".1kg.phase3.v5a.vcf.gz",
+                   "%27%20", chrom, ":", start, "-", end
+  )
 
-  if (web == FALSE) {
-    command   <- paste("tabix -h ", path, " ", chrom, ":", start, "-", end, sep = "")
-    txt       <- paste(unlist(system(command, intern = TRUE)), collapse = "\n")
-  }
+  # Download the data from the server.
+  txt <- RCurl::getURL(data_url)
 
   # Extract the sample identifiers from the VCF header.
   sample_ids <- strsplit(
@@ -140,7 +126,7 @@ get_vcf <- function(chrom, start, end, pop = NA, path = "", web = TRUE) {
   sample_ids <- sample_ids[10:length(sample_ids)]
 
   # Read the body of the data into a dataframe.
-  vcf <- read.delim(
+  vcf <- utils::read.delim(
     text = txt, header = FALSE, comment.char = "#", stringsAsFactors = FALSE)
 
   # Assign the standard column names and sample identifiers.
@@ -161,7 +147,7 @@ get_vcf <- function(chrom, start, end, pop = NA, path = "", web = TRUE) {
 
   retval <- list()
 
-  data("ind", package="VarExp", envir = environment())
+  utils::data("ind", package = "VarExp", envir = environment())
   retval$ind <- ind[colnames(vcf)[10:ncol(vcf)],]
 
   # Separate the metadata from the genotypes.
